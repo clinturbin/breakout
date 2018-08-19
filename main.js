@@ -1,42 +1,40 @@
-var canvas = document.querySelector(".myCanvas");
-var ctx = canvas.getContext("2d");
-var xCoordinate = canvas.width / 2;
-var yCoordinate = canvas.height - 30;
-var xIncrease = 2;
-var yIncrease = -2;
-var ballRadius = 10;
-var paddleHeight = 10;
-var paddleWidth = 75;
-var paddleX = (canvas.width - paddleWidth) / 2;
-var rightPressed = false;
-var leftPressed = false;
+let canvas = document.querySelector(".myCanvas");
+let ctx = canvas.getContext("2d");
+let xCoordinate = canvas.width / 2;
+let yCoordinate = canvas.height - 30;
+let xIncrease = 2;
+let yIncrease = -2;
+let ballRadius = 10;
+let paddleHeight = 10;
+let paddleWidth = 75;
+let paddleX = (canvas.width - paddleWidth) / 2;
+let rightPressed = false;
+let leftPressed = false;
 
-document.addEventListener("keydown", function (event) {
+document.addEventListener("keydown", (event) => {
     keyDownHandler(event);
 });
-document.addEventListener("keyup", function (event) {
+document.addEventListener("keyup", (event) => {
     keyUpHandler(event);
 });
 
-var keyDownHandler = function (event) {
+let keyDownHandler = (event) => {
     if (event.keyCode === 39) {
         rightPressed = true;
-    }
-    else if (event.keyCode === 37) {
+    } else if (event.keyCode === 37) {
         leftPressed = true;
     }
 };
 
-var keyUpHandler = function (event) {
+let keyUpHandler = (event) => {
     if (event.keyCode === 39) {
         rightPressed = false;
-    }
-    else if (event.keyCode === 37) {
+    } else if (event.keyCode === 37) {
         leftPressed = false;
     }
 };
 
-var drawBall = function () {
+let drawBall = () => {
     ctx.beginPath();
     ctx.arc(xCoordinate, yCoordinate, ballRadius, 0, Math.PI*2);
     ctx.fillStyle = "#0095DD";
@@ -44,7 +42,7 @@ var drawBall = function () {
     ctx.closePath();
 };
 
-var drawPaddle = function () {
+let drawPaddle = () => {
     ctx.beginPath();
     ctx.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
     ctx.fillStyle = "#0095DD";
@@ -52,26 +50,32 @@ var drawPaddle = function () {
     ctx.closePath();
 };
 
-
-var checkCircleBorders = function () {
-    if (xCoordinate + xIncrease < ballRadius || xCoordinate + xIncrease > canvas.width - ballRadius) {
+let checkCircleBorders = () => {
+    if (xCoordinate + xIncrease > canvas.width - ballRadius || xCoordinate + xIncrease < ballRadius) {
         xIncrease = -xIncrease;
     }
-    if (yCoordinate + yIncrease < ballRadius || yCoordinate + yIncrease > canvas.height - ballRadius) {
+    if (yCoordinate + yIncrease < ballRadius) {
         yIncrease = -yIncrease;
+    } else if (yCoordinate + yIncrease > canvas.height - ballRadius) {
+        if (xCoordinate > paddleX && xCoordinate < paddleX + paddleWidth) {
+            yIncrease = -yIncrease;
+        } else {
+            alert("GAME OVER");
+            document.location.reload();
+        }
     }
 };
 
-var checkPaddleBorders = function () {
+let checkPaddleBorders = () => {
     if(rightPressed && paddleX < canvas.width-paddleWidth) {
         paddleX += 7;
     }
     else if(leftPressed && paddleX > 0) {
         paddleX -= 7;
     }
-}
+};
 
-var draw = function () {
+let draw = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBall();
     drawPaddle();
@@ -82,27 +86,3 @@ var draw = function () {
 };
 
 setInterval(draw, 10);
-
-
-/* 
-// Print a red square to the canvas
-ctx.beginPath();
-ctx.rect(20, 40, 50, 50);
-ctx.fillStyle = "#FF0000";
-ctx.fill();
-ctx.closePath();
-
-// Print a green circle
-ctx.beginPath();
-ctx.arc(300, 180, 40, 0, Math.PI*2, false);
-ctx.fillStyle = "green";
-ctx.fill();
-ctx.closePath();
-
-// Print Blue Stroked Empyt Rectangle
-ctx.beginPath();
-ctx.rect(160, 30, 100, 40);
-ctx.strokeStyle = "rgba(0, 0, 255, 0.5)";
-ctx.stroke();
-ctx.closePath();
-*/
